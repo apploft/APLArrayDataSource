@@ -3,7 +3,7 @@
 
 
 typedef void (^TableViewCellConfigureBlock)(id cell, id item);
-
+typedef NSString* (^CellIdentifierForIndexPathItemBlock)(NSIndexPath *indexPath, id item);
 
 @protocol ALEditableModel <NSObject>
 
@@ -21,6 +21,12 @@ typedef void (^TableViewCellConfigureBlock)(id cell, id item);
 - (id)initWithItems:(NSArray *)anItems
      cellIdentifier:(NSString *)aCellIdentifier
  configureCellBlock:(TableViewCellConfigureBlock)aConfigureCellBlock;
+
+- (id)initWithItems:(NSArray *)anItems
+cellIdentifierBlock:(CellIdentifierForIndexPathItemBlock)aCellIdentifierBlock
+ configureCellBlock:(TableViewCellConfigureBlock)aConfigureCellBlock;
+
+- (NSString*)cellIdentifierForIndexPath:(NSIndexPath*)indexPath;
 
 - (id)itemAtIndexPath:(NSIndexPath *)indexPath;
 - (NSArray*)itemsForSection:(NSInteger)section;

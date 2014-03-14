@@ -5,6 +5,7 @@
 @interface APLArrayDataSource ()
 
 @property (nonatomic, copy) NSString *cellIdentifier;
+@property (nonatomic, copy) CellIdentifierForIndexPathItemBlock cellIdentifierBlock;
 @property (nonatomic, copy) TableViewCellConfigureBlock configureCellBlock;
 
 @end
@@ -28,6 +29,18 @@
     return self;
 }
 
+- (id)initWithItems:(NSArray *)anItems
+cellIdentifierBlock:(CellIdentifierForIndexPathItemBlock)aCellIdentifierBlock
+ configureCellBlock:(TableViewCellConfigureBlock)aConfigureCellBlock {
+    self = [super init];
+    if (self) {
+        self.items = anItems;
+        self.cellIdentifierBlock = aCellIdentifierBlock;
+        self.configureCellBlock = aConfigureCellBlock;
+    }
+    return self;
+}
+
 - (id)itemAtIndexPath:(NSIndexPath *)indexPath {
     NSArray *items = [self itemsForSection:indexPath.section];
     NSUInteger row = indexPath.row;
@@ -42,6 +55,14 @@
     self.items = items;
 }
 
+- (NSString*)cellIdentifierForIndexPath:(NSIndexPath*)indexPath {
+    if (self.cellIdentifierBlock) {
+        id item = [self itemAtIndexPath:indexPath];
+        return self.cellIdentifierBlock(indexPath,item);
+    }
+    return self.cellIdentifier;
+}
+
 
 #pragma mark UITableViewDataSource
 
@@ -50,7 +71,8 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:self.cellIdentifier forIndexPath:indexPath];
+    NSString *cellIdentifier = [self cellIdentifierForIndexPath:indexPath];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier forIndexPath:indexPath];
     id item = [self itemAtIndexPath:indexPath];
     self.configureCellBlock(cell, item);
     return cell;
