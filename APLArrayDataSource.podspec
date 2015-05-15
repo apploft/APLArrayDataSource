@@ -22,7 +22,7 @@ Pod::Spec.new do |s|
   
   s.author       = 'Chris Eidhof', 'Michael Kamphausen', 'Tobias Conradi'
   
-  s.platform     = :ios
+  s.platform     = :ios, "5.0"
 
   s.source       = { :git => "https://github.com/apploft/APLArrayDataSource.git", :tag => s.version.to_s }
 
