@@ -7,13 +7,14 @@ Concept and code is from this great [objc.io article](http://www.objc.io/issue-1
                    
 Additionally supports:
 
+* multiple cell identifiers
 * cell editing (deletion only)
 * sections, with nested NSArrays as data source (use subclass APLArrayWithSectionsDataSource)
 
 ## Installation
 Install via cocoapods by adding this to your Podfile:
 
-	pod "APLArrayDataSource", "~> 0.0.3"
+	pod "APLArrayDataSource"
 
 ## Usage
 

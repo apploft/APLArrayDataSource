@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "APLArrayDataSource"
-  s.version      = "0.0.3"
+  s.version      = "0.0.4"
   s.summary      = "UITableViewDataSource for NSArray"
 
   s.description  = <<-DESC
@@ -11,6 +11,7 @@ Pod::Spec.new do |s|
                    http://www.objc.io/issue-1/lighter-view-controllers.html
                    
                    Additionally supports:
+                   * multiple cell identifiers
                    * cell editing (deletion only)
                    * sections, with nested NSArrays as data source (use subclass APLArrayWithSectionsDataSource)
                    DESC
@@ -19,7 +20,7 @@ Pod::Spec.new do |s|
 
   s.license      = { :type => 'MIT', :file => 'LICENSE' }
   
-  s.author       = 'Chris Eidhof', 'Michael Kamphausen'
+  s.author       = 'Chris Eidhof', 'Michael Kamphausen', 'Tobias Conradi'
   
   s.platform     = :ios
 
