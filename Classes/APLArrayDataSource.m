@@ -58,21 +58,35 @@
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
     id<ALEditableModel> item = [self itemAtIndexPath:indexPath];
-    return [item conformsToProtocol:@protocol(ALEditableModel)] ? [item isEditable] : NO;
+    return [item respondsToSelector:@selector(isEditable)] ? [item isEditable] : NO;
 }
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         id<ALEditableModel> item = [self itemAtIndexPath:indexPath];
-        if ([item conformsToProtocol:@protocol(ALEditableModel)]) {
-            [item deleteObject];
+        __weak APLArrayDataSource* weakSelf = self;
+        
+        TableViewCommitEditingBlock completion = ^(BOOL success) {
+            if (success) {
+                if ([item respondsToSelector:@selector(deleteObject)]) {
+                    [item deleteObject];
+                };
+                
+                NSMutableArray* mutableItems = [[weakSelf itemsForSection:indexPath.section] mutableCopy];
+                [mutableItems removeObject:item];
+                [weakSelf setItems:mutableItems forSection:indexPath.section];
+                
+                [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+            } else {
+                [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+            }
         };
         
-        NSMutableArray* mutableItems = [[self itemsForSection:indexPath.section] mutableCopy];
-        [mutableItems removeObject:item];
-        [self setItems:mutableItems forSection:indexPath.section];
-        
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+        if (self.shouldCommitEditingBlock == nil) {
+            completion(YES);
+        } else {
+            self.shouldCommitEditingBlock(item, editingStyle, completion);
+        }
     }
 }
 
